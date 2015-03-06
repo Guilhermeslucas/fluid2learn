@@ -10,6 +10,9 @@ import pt.c01interfaces.s01knowledge.s01base.inter.IResponder;
 public class Enquirer implements IEnquirer
 {
     IObjetoConhecimento obj;
+    String pergunta;
+    String respostaEsperada;
+    String resposta;
 	
 	public Enquirer()
 	{
@@ -20,30 +23,41 @@ public class Enquirer implements IEnquirer
 	public void connect(IResponder responder)
 	{
         IBaseConhecimento bc = new BaseConhecimento();
+        
+        /*lista o nome de todos animais do banco de dados*/
+        String animais[] = bc.listaNomes();
+        boolean encontrou = true;
+        
+        for (String animal : animais && encontrou) {
+        	obj = bc.recuperaObjeto(animal);
+        	IDeclaracao decl = obj.primeira();
+        	boolean esperado = true;
+        	
+        	while (decl != null && esperado) {
+        		pergunta = decl.getPropriedade();
+        		respostaEsperada = decl.getValor();
+        		resposta = responder.ask(pergunta);
+        		
+        		if (resposta.equalsIgnoreCase(respostaEsperada)) {
+        			decl = obj.proxima();
+        		}
+        		
+        		else {
+        			esperado = false;
+        		}
+        		
+        		}
+        	
+        	if (esperado) {
+        		encontrou = false;
+        		boolean acertei = responder.finalAnswer(animal)
+        		
+        	}
+        	
+        	
+	}
 		
-		obj = bc.recuperaObjeto("tiranossauro");
-
-		IDeclaracao decl = obj.primeira();
 		
-        boolean animalEsperado = true;
-		while (decl != null && animalEsperado) {
-			String pergunta = decl.getPropriedade();
-			String respostaEsperada = decl.getValor();
-			
-			String resposta = responder.ask(pergunta);
-			if (resposta.equalsIgnoreCase(respostaEsperada))
-				decl = obj.proxima();
-			else
-				animalEsperado = false;
-		}
-		
-		boolean acertei = responder.finalAnswer("tiranossauro");
-		
-		if (acertei)
-			System.out.println("Oba! Acertei!");
-		else
-			System.out.println("fuem! fuem! fuem!");
-
 	}
 
 }
