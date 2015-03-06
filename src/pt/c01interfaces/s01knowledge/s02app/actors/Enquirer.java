@@ -23,6 +23,7 @@ public class Enquirer implements IEnquirer
 	public void connect(IResponder responder)
 	{
         IBaseConhecimento bc = new BaseConhecimento();
+        HashMap<String,String> map=new HashMap<String,String>();
         
         /*lista o nome de todos animais do banco de dados*/
         String animais[] = bc.listaNomes();
@@ -36,8 +37,16 @@ public class Enquirer implements IEnquirer
         	while (decl != null && esperado) {
         		pergunta = decl.getPropriedade();
         		respostaEsperada = decl.getValor();
-        		resposta = responder.ask(pergunta);
         		
+        		if(!map.containsKey(pergunta)){
+					resposta = responder.ask(pergunta);
+					map.put(pergunta, resposta);
+
+				}
+				else
+					//ja fez a pergunta
+					resposta = map.get(pergunta);
+					
         		if (resposta.equalsIgnoreCase(respostaEsperada)) {
         			decl = obj.proxima();
         		}
