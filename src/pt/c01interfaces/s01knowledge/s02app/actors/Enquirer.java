@@ -16,6 +16,8 @@ public class Enquirer implements IEnquirer
     String pergunta;
     String respostaEsperada;
     String resposta;
+    int i;
+    String animal;
 	
 	public Enquirer()
 	{
@@ -32,7 +34,8 @@ public class Enquirer implements IEnquirer
         String animais[] = bc.listaNomes();
         boolean encontrou = true;
         
-        for (String animal : animais && encontrou) {
+        for (i = 0; i < animais.length && encontrou; i++) {
+        	animal = animais[i];
         	obj = bc.recuperaObjeto(animal);
         	IDeclaracao decl = obj.primeira();
         	boolean esperado = true;
