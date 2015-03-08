@@ -7,6 +7,9 @@ import pt.c01interfaces.s01knowledge.s01base.inter.IEnquirer;
 import pt.c01interfaces.s01knowledge.s01base.inter.IObjetoConhecimento;
 import pt.c01interfaces.s01knowledge.s01base.inter.IResponder;
 
+/*importando biblioteca para uso do hashmap*/
+import java.util.*;
+
 public class Enquirer implements IEnquirer
 {
     IObjetoConhecimento obj;
@@ -54,19 +57,14 @@ public class Enquirer implements IEnquirer
         		else {
         			esperado = false;
         		}
+        	}
         		
-        		}
         	
         	if (esperado) {
         		encontrou = false;
-        		boolean acertei = responder.finalAnswer(animal)
+        		boolean acertei = responder.finalAnswer(animal);
         		
         	}
-        	
-        	
+        }
 	}
-		
-		
-	}
-
 }
