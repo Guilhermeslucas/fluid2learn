@@ -65,9 +65,17 @@ public class Enquirer implements IEnquirer
         	
         	if (esperado) {
         		encontrou = false;
-        		boolean acertei = responder.finalAnswer(animal);
         		
         	}
         }
+        
+        boolean acertei = responder.finalAnswer(animal);
+        
+        if (acertei) {
+        	System.out.println("Oba! Acertei!");	
+        }
+        
+        else
+        	System.out.println("fuem! fuem! fuem");
 	}
 }
