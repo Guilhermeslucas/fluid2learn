@@ -10,104 +10,105 @@ import pt.c02classes.s01knowledge.s01base.inter.IResponder;
 public class EnquirerMaze implements IEnquirer {
 
 	IResponder responder;
+	//pilha para armazenar as ultimas direções que o personagem andou
+	Stack<String> coordenadas;
 	
 	public void connect(IResponder responder) {
 		this.responder = responder;
 	}
 	
 	//funcao para verificar se o personagem esta voltando no caminho
-	public boolean voltando(String veio, String vai) {
-		if (veio == null || vai == null)
-			return false;
+	public boolean labirinto() {
 		
-		if (veio.equalsIgnoreCase("norte") && vai.equalsIgnoreCase("sul"))
+		if (responder.ask("aqui").equalsIgnoreCase("saida"))
 			return true;
 		
-		else if(veio.equalsIgnoreCase("leste") && vai.equalsIgnoreCase("oeste"))
-			return true;
+		boolean possivel = false; 
 		
-		else if(veio.equalsIgnoreCase("oeste") && vai.equalsIgnoreCase("leste"))
-			return true;
-		
-		else if(veio.equalsIgnoreCase("sul") && vai.equalsIgnoreCase("norte"))
-			return true;
-		
-		return false;
+		if (responder.ask("norte").equalsIgnoreCase("passagem") &&  !possivel || responder.ask("norte").equalsIgnoreCase("saida")) {
+			if (coordenadas.empty()){
+				responder.move("norte");
+				coordenadas.push("norte");
+				possivel = labirinto();
+				coordenadas.pop();
+			}
+			else{
+				if(!coordenadas.peek().equalsIgnoreCase("sul")){
+					responder.move("norte");
+					coordenadas.push("norte");
+					possivel = labirinto();
+					coordenadas.pop();
+				}
+			}
 			
-	}
-	
-	public String volta(String ultimo) {
-		if (ultimo.equalsIgnoreCase("norte"))
-			return "sul";
-		
-		else if (ultimo.equalsIgnoreCase("sul"))
-			return "norte";
-		
-		else if (ultimo.equalsIgnoreCase("leste"))
-			return "oeste";
-		
-		else
-			return "leste";
+				
+		}
+		if (responder.ask("oeste").equalsIgnoreCase("passagem") && !possivel || responder.ask("oeste").equalsIgnoreCase("saida")) {
+			if (coordenadas.empty()){
+				responder.move("oeste");
+				coordenadas.push("oeste");
+				possivel = labirinto();
+				coordenadas.pop();
+			}
+			if (!coordenadas.empty()) {
+				if(!coordenadas.peek().equalsIgnoreCase("leste")){
+					responder.move("oeste");
+					coordenadas.push("oeste");
+					possivel = labirinto();
+					coordenadas.pop();
+				}
+			}
+			
+				
+		}
+		if (responder.ask("sul").equalsIgnoreCase("passagem") && !possivel || responder.ask("sul").equalsIgnoreCase("saida")) {
+			if (coordenadas.empty()){
+				responder.move("sul");
+				coordenadas.push("sul");
+				possivel = labirinto();
+				coordenadas.pop();
+			}
+			if (!coordenadas.empty()) {
+				if(!coordenadas.peek().equalsIgnoreCase("norte")){
+					responder.move("sul");
+					coordenadas.push("sul");
+					possivel = labirinto();
+					coordenadas.pop();
+				}
+			}
+			
+				
+		}
+		if (responder.ask("leste").equalsIgnoreCase("passagem") && !possivel || responder.ask("leste").equalsIgnoreCase("saida")) {
+			if (coordenadas.empty()){
+				responder.move("leste");
+				coordenadas.push("leste");
+				possivel = labirinto();
+				coordenadas.pop();
+			}
+			if (!coordenadas.empty()) {
+				if(!coordenadas.peek().equalsIgnoreCase("oeste")){
+					responder.move("leste");
+					coordenadas.push("leste");
+					possivel = labirinto();
+					coordenadas.pop();
+				}
+			}
+			
+				
+		}
+
+		return possivel;			
 	}
 	
 	public boolean discover() {
-		//Vetor que mostra quais as direcoes possiveis a serem seguidas
-		String[] coordenadas = new String[]{"norte","oeste","sul","leste"};
-		//pilha para armazenar o caminho que o usuario vai realizando
-		Stack<String> caminho = new Stack<>();
+		coordenadas = new Stack<String>();
 		
-		IBaseConhecimento bc = new BaseConhecimento();
-        bc.setScenario("Maze");
-		
-		String local = responder.ask("aqui");
-		
-		while (!local.equalsIgnoreCase("Saida")) {
-			//variavel boleana para garantir se conseguiu ou não andar
-			boolean caminhou = true;
-			//variavel para analisar qual foi o ultima direcao que o usuario foi
-			String ultMove = null;
-			
-			if (!caminho.empty())
-				ultMove = caminho.peek();
-			
-			//tentar andar nas 4 direcoes
-			for (int i = 0; i < 4 && caminhou; i++) {
-				String movimento = coordenadas[i];
-				//se a pilha estiver vazia, pode mover
-				if (caminho.empty()) {
-					caminhou = false;
-					caminho.push(movimento);
-					responder.move(movimento);
-					local = responder.ask("aqui");
-				}
-				//se a coordenada tentada é passagem e não esta votlando
-				else if (responder.ask(movimento).equalsIgnoreCase("passagem") && !voltando(ultMove,coordenadas[i])) {
-					caminhou = false;
-					caminho.push(movimento);
-					responder.move(movimento);
-					local = responder.ask("aqui");
-				}
-			}
-			//ve qual é o ultimo movimento pra analsar se nao volta
-			String ultMove2 = null;
-			if (!caminho.empty()) 
-				ultMove2 = caminho.peek();
-			
-			//caso percebe que esta voltando, cancela o caminho
-			if (caminhou && !caminho.empty()) {
-				String movimento = volta(ultMove2);
-				responder.move(movimento);
-				caminho.pop();
-				caminho.push(movimento);
-			}
-		}
-				
-		if (responder.finalAnswer("cheguei"))
+		if (labirinto())
 			System.out.println("Voc� encontrou a saida!");
 		else
 			System.out.println("Fu�m fu�m fu�m!");
 		
 		return true;
-
 	}
 }
