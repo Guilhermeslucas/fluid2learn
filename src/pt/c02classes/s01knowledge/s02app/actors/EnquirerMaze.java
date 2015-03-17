@@ -17,16 +17,19 @@ public class EnquirerMaze implements IEnquirer {
 	
 	//funcao para verificar se o personagem esta voltando no caminho
 	public boolean voltando(String veio, String vai) {
-		if (veio.equalsIgnoreCase("Norte") && vai.equalsIgnoreCase("Sul"))
+		if (veio == null || vai == null)
+			return false;
+		
+		if (veio.equalsIgnoreCase("norte") && vai.equalsIgnoreCase("sul"))
 			return true;
 		
-		else if(veio.equalsIgnoreCase("Leste") && vai.equalsIgnoreCase("Oeste"))
+		else if(veio.equalsIgnoreCase("leste") && vai.equalsIgnoreCase("oeste"))
 			return true;
 		
-		else if(veio.equalsIgnoreCase("Oeste") && vai.equalsIgnoreCase("Leste"))
+		else if(veio.equalsIgnoreCase("oeste") && vai.equalsIgnoreCase("leste"))
 			return true;
 		
-		else if(veio.equalsIgnoreCase("Sul") && vai.equalsIgnoreCase("Norte"))
+		else if(veio.equalsIgnoreCase("sul") && vai.equalsIgnoreCase("norte"))
 			return true;
 		
 		return false;
@@ -34,13 +37,13 @@ public class EnquirerMaze implements IEnquirer {
 	}
 	
 	public String volta(String ultimo) {
-		if (ultimo.equalsIgnoreCase("Norte"))
+		if (ultimo.equalsIgnoreCase("norte"))
 			return "sul";
 		
-		else if (ultimo.equalsIgnoreCase("Sul"))
+		else if (ultimo.equalsIgnoreCase("sul"))
 			return "norte";
 		
-		else if (ultimo.equalsIgnoreCase("Leste"))
+		else if (ultimo.equalsIgnoreCase("leste"))
 			return "oeste";
 		
 		else
@@ -56,7 +59,7 @@ public class EnquirerMaze implements IEnquirer {
 		IBaseConhecimento bc = new BaseConhecimento();
         bc.setScenario("Maze");
 		
-		String local = responder.ask("Aqui");
+		String local = responder.ask("aqui");
 		
 		while (!local.equalsIgnoreCase("Saida")) {
 			//variavel boleana para garantir se conseguiu ou não andar
@@ -70,21 +73,31 @@ public class EnquirerMaze implements IEnquirer {
 			//tentar andar nas 4 direcoes
 			for (int i = 0; i < 4 && caminhou; i++) {
 				String movimento = coordenadas[i];
-				
-				if (responder.ask(movimento).equalsIgnoreCase("passagem") && !voltando(ultMove,coordenadas[i])) {
+				//se a pilha estiver vazia, pode mover
+				if (caminho.empty()) {
 					caminhou = false;
 					caminho.push(movimento);
 					responder.move(movimento);
-					local = responder.ask("Aqui");
+					local = responder.ask("aqui");
+				}
+				//se a coordenada tentada é passagem e não esta votlando
+				else if (responder.ask(movimento).equalsIgnoreCase("passagem") && !voltando(ultMove,coordenadas[i])) {
+					caminhou = false;
+					caminho.push(movimento);
+					responder.move(movimento);
+					local = responder.ask("aqui");
 				}
 			}
-			
+			//ve qual é o ultimo movimento pra analsar se nao volta
 			String ultMove2 = null;
 			if (!caminho.empty()) 
 				ultMove2 = caminho.peek();
 			
+			System.out.println(ultMove2);
+			//caso percebe que esta voltando, cancela o caminho
 			if (caminhou && !caminho.empty()) {
 				String movimento = volta(ultMove2);
+				System.out.println(movimento);
 				responder.move(movimento);
 				caminho.pop();
 			}
