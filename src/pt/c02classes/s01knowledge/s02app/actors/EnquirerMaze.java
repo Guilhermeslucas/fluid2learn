@@ -93,13 +93,12 @@ public class EnquirerMaze implements IEnquirer {
 			if (!caminho.empty()) 
 				ultMove2 = caminho.peek();
 			
-			System.out.println(ultMove2);
 			//caso percebe que esta voltando, cancela o caminho
 			if (caminhou && !caminho.empty()) {
 				String movimento = volta(ultMove2);
-				System.out.println(movimento);
 				responder.move(movimento);
 				caminho.pop();
+				caminho.push(movimento);
 			}
 		}
 				
