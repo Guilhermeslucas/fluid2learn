@@ -11,20 +11,28 @@ public class EnquirerMaze implements IEnquirer {
 
 	IResponder responder;
 	//pilha para armazenar as ultimas direções que o personagem andou
-	Stack<String> coordenadas;
-	
+	Stack <String> coordenadas;
+
 	public void connect(IResponder responder) {
 		this.responder = responder;
 	}
-	
+
 	//funcao para verificar se o personagem esta voltando no caminho
 	public boolean labirinto() {
-		
+
+		/*
+		System.out.println("Norte: " + responder.ask("norte"));
+		System.out.println("Sul: " + responder.ask("sul"));
+		System.out.println("Leste: " + responder.ask("leste"));
+		System.out.println("Oeste: " + responder.ask("oeste"));
+		System.out.println("=================================");
+		*/
+
 		if (responder.ask("aqui").equalsIgnoreCase("saida"))
 			return true;
-		
-		boolean possivel = false; 
-		
+
+		boolean possivel = false;
+
 		if (responder.ask("norte").equalsIgnoreCase("passagem") &&  !possivel || responder.ask("norte").equalsIgnoreCase("saida")) {
 			if (coordenadas.empty()){
 				responder.move("norte");
@@ -40,26 +48,8 @@ public class EnquirerMaze implements IEnquirer {
 					coordenadas.pop();
 				}
 			}
-			
-				
-		}
-		if (responder.ask("oeste").equalsIgnoreCase("passagem") && !possivel || responder.ask("oeste").equalsIgnoreCase("saida")) {
-			if (coordenadas.empty()){
-				responder.move("oeste");
-				coordenadas.push("oeste");
-				possivel = labirinto();
-				coordenadas.pop();
-			}
-			if (!coordenadas.empty()) {
-				if(!coordenadas.peek().equalsIgnoreCase("leste")){
-					responder.move("oeste");
-					coordenadas.push("oeste");
-					possivel = labirinto();
-					coordenadas.pop();
-				}
-			}
-			
-				
+
+
 		}
 		if (responder.ask("sul").equalsIgnoreCase("passagem") && !possivel || responder.ask("sul").equalsIgnoreCase("saida")) {
 			if (coordenadas.empty()){
@@ -76,8 +66,8 @@ public class EnquirerMaze implements IEnquirer {
 					coordenadas.pop();
 				}
 			}
-			
-				
+
+
 		}
 		if (responder.ask("leste").equalsIgnoreCase("passagem") && !possivel || responder.ask("leste").equalsIgnoreCase("saida")) {
 			if (coordenadas.empty()){
@@ -94,21 +84,39 @@ public class EnquirerMaze implements IEnquirer {
 					coordenadas.pop();
 				}
 			}
-			
-				
+
+
+		}
+		if (responder.ask("oeste").equalsIgnoreCase("passagem") && !possivel || responder.ask("oeste").equalsIgnoreCase("saida")) {
+			if (coordenadas.empty()){
+				responder.move("oeste");
+				coordenadas.push("oeste");
+				possivel = labirinto();
+				coordenadas.pop();
+			}
+			if (!coordenadas.empty()) {
+				if(!coordenadas.peek().equalsIgnoreCase("leste")){
+					responder.move("oeste");
+					coordenadas.push("oeste");
+					possivel = labirinto();
+					coordenadas.pop();
+				}
+			}
+
+
 		}
 
-		return possivel;			
+		return possivel;
 	}
-	
+
 	public boolean discover() {
-		coordenadas = new Stack<String>();
-		
+		coordenadas = new Stack <String>();
+
 		if (labirinto())
-			System.out.println("Voc� encontrou a saida!");
+			System.out.println("Você encontrou a saida!");
 		else
-			System.out.println("Fu�m fu�m fu�m!");
-		
+			System.out.println("Fuém fuém fuém!");
+
 		return true;
 	}
 }
