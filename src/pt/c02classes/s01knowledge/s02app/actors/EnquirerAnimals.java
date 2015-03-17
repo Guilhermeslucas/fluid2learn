@@ -27,6 +27,7 @@ public class EnquirerAnimals implements IEnquirer {
 		
 		
         IBaseConhecimento bc = new BaseConhecimento();
+        bc.setScenario("animals");
         HashMap<String,String> map=new HashMap<String,String>();
         
         /*lista o nome de todos animais do banco de dados*/
@@ -77,7 +78,7 @@ public class EnquirerAnimals implements IEnquirer {
         
         else {
         	System.out.println("fuem! fuem! fuem");
-        	return false;
+        	return true;
         }
         
 	}
